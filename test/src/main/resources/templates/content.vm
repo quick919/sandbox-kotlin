@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Content</title>
+</head>
+<body>
+    <h1>Add Content</h1>
+    <div id="app">
+        <select v-model="publisher">
+            <option>publisher1</option>
+            <option>publisher2</option>
+            <option>publisher3</option>
+        </select>
+    
+        <lable>content name<input type="text" v-model="contentName" /></lable>
+        <input type="button" value="save" v-on:click="post" />
+    </div>
+    <script src="../js/index.js"></script>
+</body>
+</html>

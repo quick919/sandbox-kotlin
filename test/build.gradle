@@ -1,0 +1,47 @@
+buildscript {
+    ext.kotlin_version = '1.2.51'
+
+    repositories {
+        mavenCentral()
+
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath group: 'org.xerial', name: 'sqlite-jdbc', version: "3.21.0"
+//
+    }
+}
+
+group 'test'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+    maven("https://dl.bintray.com/kotlin/exposed")
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile 'com.sparkjava:spark-core:2.6.0'
+    compile 'com.sparkjava:spark-template-velocity:2.5.5'
+    compile "org.jetbrains.exposed:exposed:0.9.1"
+    runtime group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'SampleExampleKt'
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
