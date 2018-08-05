@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>       
+    <link rel="stylesheet" href="../css/content.css" />
     <title>Content</title>
 </head>
 <body>
@@ -15,9 +17,19 @@
             <option>publisher3</option>
         </select>
     
-        <lable>content name<input type="text" v-model="contentName" /></lable>
+        <lable>content name<input type="text" v-model="contentName" v-on:change="fetchThumbnail" /></lable>
+        
+        <ul class="image-list">
+            <div class="image-box" v-for="(thumbnail, index) in thumbnails" :key="index">
+            <li>
+                <img class="thumbnail" v-bind:class="{checked: thumbnail.isActive}" v-if="thumbnail !== null" :src="thumbnail.smallThumbnail" v-on:click="selectThumbnail(index)" ></img>    
+                <input class="disabled-checkbox" type="checkbox" />
+            </li>
+            </div>
+            <div v-bind:class="{ active: isActive }"></div>
+        </ul>
         <input type="button" value="save" v-on:click="post" />
     </div>
-    <script src="../js/index.js"></script>
+    <script src="../js/content.js"></script>
 </body>
 </html>

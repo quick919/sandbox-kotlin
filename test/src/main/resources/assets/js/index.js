@@ -1,29 +1,4 @@
-new Vue({
-  el: '#app',
-  data: {
-    message: 'Hello World',
-    contentName: '',
-    publisher: ''
-  },
-  methods: {
-    post: function () {
-      console.log(this.publisher);
-      axios.post('/content', {
-          name: this.contentName,
-          publisher: this.publisher
-        })
-        .then(function (response) {
-          console.log(response);
-
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-    }
-  }
-})
-new Vue({
+var vm = new Vue({
   el: '#app2',
   data() {
     return {
@@ -33,6 +8,7 @@ new Vue({
   created() {
     this.$nextTick(function () {
       this.getData()
+      this.getThumbnail()
     })
   },
   methods: {
