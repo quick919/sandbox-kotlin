@@ -7,6 +7,8 @@ import org.jetbrains.exposed.dao.IntEntityClass
 class Content(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Content>(Contents)
 
-    var name by Contents.name
+    var title by Contents.title
+    var imageLink by Contents.imageLink
+    var isbnCode by Contents.isbnCode
     var publisher by Publisher referencedOn Contents.publisher
 }

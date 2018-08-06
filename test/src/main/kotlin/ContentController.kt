@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.squareup.moshi.Moshi
 import dao.Content
 import dao.Contents
 import dao.Publisher
@@ -40,11 +41,15 @@ class ContentController {
             var jsonString = ""
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
                 val mapper = jacksonObjectMapper()
-                var list = mutableListOf<data.Content>()
+                var list = mutableListOf<data.Item>()
                 Content.all().forEach {
-                    val content = data.Content(
-                            name = it.name,
+                    val content = data.Item(
+                            content = data.Content(
+                            title = it.title,
+                            imageLink =  it.imageLink,
+                            isbnCode =  it.isbnCode),
                             publisher = it.publisher.name
+
                     )
                     list.add(content)
                 }
@@ -56,38 +61,26 @@ class ContentController {
 
     fun content() {
         post("/content") {req,res ->
-            val mapper = jacksonObjectMapper()
-            val content = mapper.readValue<data.Content>(req.body())
+            val moshi = Moshi.Builder().build()
+            val adapter = moshi.adapter(data.Item::class.java)
+            val obj = adapter.fromJson(req.body())
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
-                val mapper = jacksonObjectMapper()
-                var list = mutableListOf<data.Content>()
-                Content.all().forEach {
-                    try {
-                        val content = data.Content(
-                                name = it.name,
-                                publisher = it.publisher.name
-                        )
-                        list.add(content)
-                        val jsonString = mapper.writeValueAsString(content)
-
-                    }catch (e: Exception) {
-                        print(e)
-                    }
-                }
                 try {
-                    val jsonString = mapper.writeValueAsString(list)
-                    print(jsonString)
+                    val pub = Publisher.new {
+                        obj?.let {
+                            name = it.publisher
+                        }
+                    }
+                    Content.new {
+                        obj?.let {
+                            title = it.content.title
+                            imageLink = it.content.imageLink
+                            isbnCode = it.content.isbnCode
+                            publisher = pub
+                        }
+                    }
                 } catch (e: Exception) {
-                    print(e.message)
-                }
-
-
-                val pub = Publisher.new {
-                    name = content.publisher
-                }
-                Content.new {
-                    name = content.name
-                    publisher = pub
+                    println(e)
                 }
             }
         }

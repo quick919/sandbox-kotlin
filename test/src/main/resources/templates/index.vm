@@ -20,7 +20,10 @@
     <main>
     <div id="app2">
         <div>
-            <div v-for="content in contents">{{content.name}}{{content.publisher}}</div>
+            <div v-for="content in contents">
+                <label>{{ content.content.title }}</label>
+                <img :src="content.content.imageLink"></img>
+            </div>
         <div>
     </div>
     </main>

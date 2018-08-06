@@ -1,3 +1,3 @@
 package data
 
-data class Content(val name: String, val publisher: String)
+data class Content(val title: String, val imageLink: String, val isbnCode: String)

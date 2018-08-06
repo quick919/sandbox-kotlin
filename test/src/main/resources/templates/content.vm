@@ -22,7 +22,7 @@
         <ul class="image-list">
             <div class="image-box" v-for="(thumbnail, index) in thumbnails" :key="index">
             <li>
-                <lable>{{thumbnail.title}}</lable>
+                <lable>{{ thumbnail.title }}</lable>
                 <img class="thumbnail" v-bind:class="{checked: thumbnail.isActive}" v-if="thumbnail !== null" :src="thumbnail.imageLink" v-on:click="selectThumbnail(thumbnail, index)" ></img>    
                 <input class="disabled-checkbox" type="checkbox" />
             </li>
