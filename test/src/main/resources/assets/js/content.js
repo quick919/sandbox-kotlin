@@ -11,22 +11,22 @@ var vm = new Vue({
     };
   },
   methods: {
-    post: function() {
+    post: function () {
       console.log(this.publisher);
       axios
         .post("/content", {
           publisher: this.publisher,
           content: this.content
         })
-        .then(function(response) {
+        .then(function (response) {
           console.log(response);
           location = "/";
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
     },
-    fetchThumbnail: function() {
+    fetchThumbnail: function () {
       const self = this;
       axios
         .get("/thumbnail", {
@@ -34,17 +34,17 @@ var vm = new Vue({
             name: this.contentName
           }
         })
-        .then(function(response) {
+        .then(function (response) {
           console.log(response.data);
           console.log(self.thumbnails);
           self.thumbnails = response.data;
           console.log(self.thumbnails);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
     },
-    selectThumbnail: function(thumbnail, index) {
+    selectThumbnail: function (thumbnail, index) {
       const self = this;
       console.log(self.activeNumber);
       console.log(index);
@@ -59,8 +59,8 @@ var vm = new Vue({
         if (self.activeNumber === index) {
           var obj = self.thumbnails[self.activeNumber];
           obj.isActive = false;
-          self.activeNumber = "";
           self.thumbnails.splice(self.activeNumber, 1, obj);
+          self.activeNumber = "";
         } else {
           var obj = self.thumbnails[self.activeNumber];
           obj.isActive = false;

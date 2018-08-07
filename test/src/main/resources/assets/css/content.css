@@ -1,27 +1,4 @@
-ul.image-list li {
-  display: flex;
-}
-
-ul.image-list .image-box li {
-
-  position: relative;
-}
-
-.image-box .disabled-checkbox {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
 .image-box img.thumbnail.checked {
   border: 6px solid blue;
   box-sizing: border-box;
-}
-
-.image-box .disabled-checkbox {
-  display: none;
-}
-
-.image-box img.thumbnail.checked+.disabled-checkbox {
-  display: block;
 }
