@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="../css/main.css" />
     <title>Title</title>
 </head>
 <body>
@@ -18,13 +19,11 @@
     
     <a href="/create">add</a>
     <main>
-    <div id="app2">
-        <div>
-            <div v-for="content in contents">
-                <label>{{ content.content.title }}</label>
-                <img :src="content.content.imageLink"></img>
-            </div>
-        <div>
+    <div id="app2" class="content-box">
+        <div v-for="content in contents" class="content">
+            <img :src="content.content.imageLink"></img>
+            <p>{{ content.content.title }}</p>
+        </div>
     </div>
     </main>
     <script src="../js/index.js"></script>

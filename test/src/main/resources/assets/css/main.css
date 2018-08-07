@@ -1,0 +1,14 @@
+.content-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 130px;
+  height: 200px;
+  margin: 50px;
+}
