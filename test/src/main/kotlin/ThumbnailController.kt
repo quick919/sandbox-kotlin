@@ -24,7 +24,7 @@ class ThumbnailController {
                         val volumeInfo = item.volumeInfo
                         val subTitle = volumeInfo.subtitle?.let { it } ?: ""
                         val title = "${volumeInfo.title} ${subTitle}"
-                        val imageLink = volumeInfo.imageLinks?.let { it.smallThumbnail } ?: ""
+                        val imageLink = volumeInfo.imageLinks?.let { it.smallThumbnail } ?: "../image/noimage.png"
                         val isbnCode = volumeInfo.industryIdentifiers?.let { it[0].identifier } ?: ""
                         val content = Content(title, imageLink, isbnCode)
                         imageLinks.add(content)
