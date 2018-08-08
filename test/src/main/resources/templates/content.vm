@@ -12,9 +12,9 @@
     <h1>Add Content</h1>
     <div id="app">
         <select v-model="publisher">
-            <option>publisher1</option>
-            <option>publisher2</option>
-            <option>publisher3</option>
+            <option v-for="(option) in options">
+                {{ option.text }}
+            </option>
         </select>
     
         <lable>content name<input type="text" v-model="contentName" v-on:change="fetchThumbnail" /></lable>

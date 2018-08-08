@@ -11,10 +11,10 @@
     <h1>h1</h1>
     
     <select>
-        <option>a1</option>
-        <option>a1</option>
-        <option>a1</option>
-        <option>a1</option>
+        <option>all</option>
+        <option>Amazon</option>
+        <option>O'Reilly</option>
+        <option>Leanpub</option>
     </select>
     
     <a href="/create">add</a>

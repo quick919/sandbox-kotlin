@@ -2,12 +2,24 @@ var vm = new Vue({
   el: "#app",
   data() {
     return {
-      contentName: "",
-      publisher: "",
+      publisher: "Amazon",
       isActive: false,
       thumbnails: [],
       activeNumber: "",
-      content: {}
+      content: {},
+      options: [{
+        id: 1,
+        text: "Amazon"
+      }, {
+        id: 2,
+        text: "O'Reilly"
+      }, {
+        id: 3,
+        text: "gihyo"
+      }, {
+        id: 4,
+        text: "Leanpub"
+      }]
     };
   },
   methods: {

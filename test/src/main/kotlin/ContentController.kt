@@ -18,7 +18,14 @@ class ContentController {
         try {
             Database.connect("jdbc:sqlite:./test.sqlite", "org.sqlite.JDBC")
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
-                create(Publishers, Contents)
+                val c = create(Publishers, Contents)
+                if (Publisher.all().empty()) {
+                    mutableListOf("Amazon", "O'Reilly", "gihyo", "Leanpub").forEach { pub ->
+                        Publishers.insert {
+                            it[name] = pub
+                        }
+                    }
+                }
             }
 
         } catch (e: Exception) {
@@ -66,11 +73,7 @@ class ContentController {
             val obj = adapter.fromJson(req.body())
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
                 try {
-                    val pub = Publisher.new {
-                        obj?.let {
-                            name = it.publisher
-                        }
-                    }
+                    val pub = Publisher.find { Publishers.name eq obj?.publisher }.first()
                     Content.new {
                         obj?.let {
                             title = it.content.title
