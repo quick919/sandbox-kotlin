@@ -52,6 +52,7 @@ class ContentController {
                 Content.all().forEach {
                     val content = data.Item(
                             content = data.Content(
+                            id = it.id.toString(),
                             title = it.title,
                             imageLink =  it.imageLink,
                             isbnCode =  it.isbnCode),
@@ -88,6 +89,4 @@ class ContentController {
             }
         }
     }
-
-
 }

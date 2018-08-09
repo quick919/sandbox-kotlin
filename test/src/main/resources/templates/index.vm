@@ -1,31 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="../css/main.css" />
-    <title>Title</title>
-</head>
-<body>
-    <h1>h1</h1>
-    
-    <select>
-        <option>all</option>
-        <option>Amazon</option>
-        <option>O'Reilly</option>
-        <option>Leanpub</option>
-    </select>
-    
-    <a href="/create">add</a>
-    <main>
-    <div id="app2" class="content-box">
-        <div v-for="content in contents" class="content">
-            <img :src="content.content.imageLink"></img>
-            <p>{{ content.content.title }}</p>
-        </div>
-    </div>
-    </main>
-    <script src="../js/index.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="../css/main.css"/>
+        <title>Title</title>
+    </head>
+    <body>
+
+        <h1>h1</h1>
+
+        <select>
+            <option>all</option>
+            <option>Amazon</option>
+            <option>O'Reilly</option>
+            <option>Leanpub</option>
+        </select>
+
+        <a href="/create">add</a>
+        <main>
+            <div id="app2" class="content-box">
+                <div v-for="(content, index) in contents" :key="index" class="content">
+                    <img :src="content.content.imageLink" @click="openModal(content)" @keyup.esc="closeModal()"></img>
+                    <p>{{ content.content.title }}</p>
+
+                </div>
+                <modal></modal>
+            </div>
+
+        </main>
+        <script type="text/x-template" id="modal-template">
+            <transition name="modal">
+                <div v-if="active" class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-container">
+                            <div class="modal-header">
+                                <slot name="header">
+                                    default header
+                                </slot>
+                            </div>
+
+                            <div class="modal-body">
+                                <slot name="body">
+                                    <div class="content-box">
+                                        <div class="content">
+                                            <input type="text" :value="content.content.title"/>
+                                            <img :src="content.content.imageLink"></img>
+                                        </div>
+                                    </div>
+                                </slot>
+                            </div>
+
+                            <div class="modal-footer">
+                                <slot name="footer">
+                                    default footer
+                                    <button class="modal-default-button" @click="update">update</button>
+                                    <button class="modal-default-button" @click="close">close</button>
+                                </slot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </script>
+        <script src="../js/index.js"></script>
+    </body>
 </html>
