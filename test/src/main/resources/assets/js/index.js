@@ -15,7 +15,8 @@ new Vue({
   methods: {
     getData: function() {
       const self = this;
-      axios.get("/contents")
+      axios
+        .get("/contents")
         .then(function(response) {
           self.contents = response.data;
         })
@@ -24,7 +25,7 @@ new Vue({
         });
     },
     openModal: function(content) {
-      Hub.$emit("open-modal", content);
+      Hub.$emit("open-modal", content.content);
     },
     closeModal: function() {
       Hub.$emit("close-modal");
@@ -37,19 +38,34 @@ Vue.component("modal", {
   data: function() {
     return {
       active: false,
-      content: {}
+      editContent: {}
     };
   },
   methods: {
     open: function(content) {
       this.active = true;
-      this.content = content;
+      this.editContent = {
+        id: content.id,
+        title: content.title,
+        imageLink: content.imageLink,
+        isbnCode: content.isbnCode,
+        publisher: content.publisher
+      };
+
     },
     close: function() {
       this.active = false;
     },
-    update: function() {
-      console.log("update");
+    update: function(content) {
+      var self = this;
+      axios
+        .post("/edit", JSON.stringify(this.editContent))
+        .then(function(response) {
+          self.close();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   mounted() {

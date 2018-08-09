@@ -45,8 +45,8 @@
                                 <slot name="body">
                                     <div class="content-box">
                                         <div class="content">
-                                            <input type="text" :value="content.content.title"/>
-                                            <img :src="content.content.imageLink"></img>
+                                            <input v-model="editContent.title" type="text"/>
+                                            <img :src="editContent.imageLink"></img>
                                         </div>
                                     </div>
                                 </slot>
@@ -55,7 +55,7 @@
                             <div class="modal-footer">
                                 <slot name="footer">
                                     default footer
-                                    <button class="modal-default-button" @click="update">update</button>
+                                    <button class="modal-default-button" @click="update(editContent)">update</button>
                                     <button class="modal-default-button" @click="close">close</button>
                                 </slot>
                             </div>

@@ -34,6 +34,7 @@ class ContentController {
         create()
         contents()
         content()
+        edit();
     }
 
     fun create() {
@@ -55,8 +56,8 @@ class ContentController {
                             id = it.id.toString(),
                             title = it.title,
                             imageLink =  it.imageLink,
-                            isbnCode =  it.isbnCode),
-                            publisher = it.publisher.name
+                            isbnCode =  it.isbnCode,
+                            publisher = it.publisher.name)
 
                     )
                     list.add(content)
@@ -74,7 +75,7 @@ class ContentController {
             val obj = adapter.fromJson(req.body())
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
                 try {
-                    val pub = Publisher.find { Publishers.name eq obj?.publisher }.first()
+                    val pub = Publisher.find { Publishers.name eq obj?.content?.publisher }.first()
                     Content.new {
                         obj?.let {
                             title = it.content.title
@@ -86,6 +87,20 @@ class ContentController {
                 } catch (e: Exception) {
                     println(e)
                 }
+            }
+        }
+    }
+
+    fun edit() {
+        post("/edit") {req, res ->
+            val moshi = Moshi.Builder().build()
+            val adapter = moshi.adapter(data.Content::class.java)
+            val obj = adapter.fromJson(req.body())
+            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+                obj?.let {
+                    val content = Content.findById(it.id.toInt())
+                    content?.title = it.title
+                }?:  throw Exception()
             }
         }
     }
