@@ -11,6 +11,7 @@ new Vue({
     this.$nextTick(
       function () {
         Hub.$on("updateContent", this.updateContent);
+        Hub.$on("deleteContent", this.deleteContent);
       }.bind(this)
     );
   },
@@ -43,6 +44,14 @@ new Vue({
           return;
         }
         this.contents.splice(index, 1, content);
+      });
+    },
+    deleteContent: function (content) {
+      this.contents.forEach((elm, index) => {
+        if (elm.id !== content.id) {
+          return;
+        }
+        this.contents.splice(index, 1);
       });
     }
   }
@@ -87,6 +96,7 @@ Vue.component("modal", {
       axios
         .post("/delete", JSON.stringify(this.editContent))
         .then(function (response) {
+          Hub.$emit("deleteContent", content);
           self.close();
         })
         .catch(function (error) {
