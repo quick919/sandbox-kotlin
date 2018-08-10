@@ -32,7 +32,7 @@ new Vue({
         });
     },
     openModal: function(content) {
-      Hub.$emit("open-modal", content.content);
+      Hub.$emit("open-modal", content);
     },
     closeModal: function() {
       Hub.$emit("close-modal");

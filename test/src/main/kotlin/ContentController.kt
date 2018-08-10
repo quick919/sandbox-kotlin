@@ -1,6 +1,6 @@
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import dao.Content
 import dao.Contents
 import dao.Publisher
@@ -49,21 +49,21 @@ class ContentController {
         get("/contents") {_,_->
             var jsonString = ""
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
-                val mapper = jacksonObjectMapper()
-                var list = mutableListOf<data.Item>()
+                var list = mutableListOf<data.Content>()
                 Content.all().forEach {
-                    val content = data.Item(
-                            content = data.Content(
+                    val content = data.Content(
                             id = it.id.toString(),
                             title = it.title,
                             imageLink =  it.imageLink,
                             isbnCode =  it.isbnCode,
                             publisher = it.publisher.name)
 
-                    )
                     list.add(content)
                 }
-                jsonString = mapper.writeValueAsString(list)
+                val moshi = Moshi.Builder().build()
+                val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+                val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
+                jsonString = listAdapter.toJson(list)
             }
             jsonString
         }
