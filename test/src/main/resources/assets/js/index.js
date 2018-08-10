@@ -7,6 +7,13 @@ new Vue({
       contents: []
     };
   },
+  mounted() {
+    this.$nextTick(
+      function() {
+        Hub.$on("updateContent", this.updateContent);
+      }.bind(this)
+    );
+  },
   created() {
     this.$nextTick(function() {
       this.getData();
@@ -29,6 +36,9 @@ new Vue({
     },
     closeModal: function() {
       Hub.$emit("close-modal");
+    },
+    updateContent: function(content) {
+      console.log(content);
     }
   }
 });
@@ -51,7 +61,6 @@ Vue.component("modal", {
         isbnCode: content.isbnCode,
         publisher: content.publisher
       };
-
     },
     close: function() {
       this.active = false;
@@ -61,6 +70,7 @@ Vue.component("modal", {
       axios
         .post("/edit", JSON.stringify(this.editContent))
         .then(function(response) {
+          Hub.$emit("updateContent", content);
           self.close();
         })
         .catch(function(error) {
