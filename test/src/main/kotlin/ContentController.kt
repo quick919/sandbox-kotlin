@@ -34,7 +34,8 @@ class ContentController {
         create()
         contents()
         content()
-        edit();
+        edit()
+        delete()
     }
 
     fun create() {
@@ -100,6 +101,19 @@ class ContentController {
                 obj?.let {
                     val content = Content.findById(it.id.toInt())
                     content?.title = it.title
+                }?:  throw Exception()
+            }
+        }
+    }
+
+    fun delete() {
+        post("/delete") {req, res ->
+            val moshi = Moshi.Builder().build()
+            val adapter = moshi.adapter(data.Content::class.java)
+            val obj = adapter.fromJson(req.body())
+            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+                obj?.let {
+                    Contents.deleteWhere { Contents.id eq obj?.let { it.id.toInt() } }
                 }?:  throw Exception()
             }
         }

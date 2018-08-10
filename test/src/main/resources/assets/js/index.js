@@ -76,6 +76,17 @@ Vue.component("modal", {
         .catch(function(error) {
           console.log(error);
         });
+    },
+    del: function(content) {
+      var self = this;
+      axios
+        .post("/delete", JSON.stringify(this.editContent))
+        .then(function(response) {
+          self.close();
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   },
   mounted() {
