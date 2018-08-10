@@ -24,10 +24,9 @@ var vm = new Vue({
   },
   methods: {
     post: function () {
-      console.log(this.publisher);
+      this.content.publisher = this.publisher;
       axios
         .post("/content", {
-          publisher: this.publisher,
           content: this.content
         })
         .then(function (response) {
