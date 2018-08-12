@@ -48,5 +48,22 @@
 }
 
 .modal-body {
-  margin: 20px 0;
+  height: 300px;
+}
+
+.modal-body-common {
+  padding: 5px;
+}
+
+.modal-body-image {
+  padding-top: 25px;
+  text-align: center;
+}
+
+.modal-footer {
+  text-align: center;
+}
+
+.button {
+  cursor: pointer;
 }

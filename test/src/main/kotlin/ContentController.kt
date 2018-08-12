@@ -101,6 +101,7 @@ class ContentController {
                 obj?.let {
                     val content = Content.findById(it.id.toInt())
                     content?.title = it.title
+                    content?.publisher = Publisher.find { Publishers.name eq it.publisher }.first()
                 }?:  throw Exception()
             }
         }
