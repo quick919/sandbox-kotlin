@@ -55,7 +55,7 @@ class ContentController {
 
                 when(publisher) {
                     "all" -> {
-                        Content.all().forEach {
+                        Content.all().sortedBy { it.title }.forEach {
                             val content = data.Content(
                                     id = it.id.toString(),
                                     title = it.title,
@@ -67,7 +67,7 @@ class ContentController {
                     }
                     else -> {
                         val pub = Publisher.find { Publishers.name eq publisher }.first()
-                        Content.find { Contents.publisher eq pub.id }.forEach {
+                        Content.find { Contents.publisher eq pub.id }.sortedBy { it.title }.forEach {
                             val content = data.Content(
                                     id = it.id.toString(),
                                     title = it.title,
