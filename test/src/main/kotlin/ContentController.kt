@@ -46,19 +46,38 @@ class ContentController {
     }
 
     fun contents() {
-        get("/contents") {_,_->
+        get("/contents") {req,_->
             var jsonString = ""
+            val publisher = req.queryParams("publisher")
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+//                logger.addLogger(StdOutSqlLogger)
                 var list = mutableListOf<data.Content>()
-                Content.all().forEach {
-                    val content = data.Content(
-                            id = it.id.toString(),
-                            title = it.title,
-                            imageLink =  it.imageLink,
-                            isbnCode =  it.isbnCode,
-                            publisher = it.publisher.name)
 
-                    list.add(content)
+                when(publisher) {
+                    "all" -> {
+                        Content.all().forEach {
+                            val content = data.Content(
+                                    id = it.id.toString(),
+                                    title = it.title,
+                                    imageLink =  it.imageLink,
+                                    isbnCode =  it.isbnCode,
+                                    publisher = it.publisher.name)
+                            list.add(content)
+                        }
+                    }
+                    else -> {
+                        val pub = Publisher.find { Publishers.name eq publisher }.first()
+                        Content.find { Contents.publisher eq pub.id }.forEach {
+                            val content = data.Content(
+                                    id = it.id.toString(),
+                                    title = it.title,
+                                    imageLink =  it.imageLink,
+                                    isbnCode =  it.isbnCode,
+                                    publisher = it.publisher.name)
+
+                            list.add(content)
+                        }
+                    }
                 }
                 val moshi = Moshi.Builder().build()
                 val type = Types.newParameterizedType(List::class.java, data.Content::class.java)

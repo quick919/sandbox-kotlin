@@ -4,41 +4,64 @@ new Vue({
   el: "#app2",
   data() {
     return {
-      contents: []
+      contents: [],
+      selected: "all",
+      options: [
+        {
+          id: 1,
+          text: "Amazon"
+        },
+        {
+          id: 2,
+          text: "O'Reilly"
+        },
+        {
+          id: 3,
+          text: "gihyo"
+        },
+        {
+          id: 4,
+          text: "Leanpub"
+        }
+      ]
     };
   },
   mounted() {
     this.$nextTick(
-      function () {
+      function() {
         Hub.$on("updateContent", this.updateContent);
         Hub.$on("deleteContent", this.deleteContent);
       }.bind(this)
     );
   },
   created() {
-    this.$nextTick(function () {
+    this.$nextTick(function() {
       this.getData();
     });
   },
   methods: {
-    getData: function () {
+    getData: function() {
       const self = this;
       axios
-        .get("/contents")
-        .then(function (response) {
+        .get("/contents", {
+          params: {
+            publisher: self.selected
+          }
+        })
+        .then(function(response) {
           self.contents = response.data;
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
     },
-    openModal: function (content) {
+    openModal: function(content) {
       Hub.$emit("open-modal", content);
     },
-    closeModal: function () {
+    closeModal: function() {
       Hub.$emit("close-modal");
     },
-    updateContent: function (content) {
+    updateContent: function(content) {
       this.contents.forEach((elm, index) => {
         if (elm.id !== content.id) {
           return;
@@ -46,40 +69,48 @@ new Vue({
         this.contents.splice(index, 1, content);
       });
     },
-    deleteContent: function (content) {
+    deleteContent: function(content) {
       this.contents.forEach((elm, index) => {
         if (elm.id !== content.id) {
           return;
         }
         this.contents.splice(index, 1);
       });
+    },
+    changePublisher: function() {
+      this.getData();
     }
   }
 });
 
 Vue.component("modal", {
   template: "#modal-template",
-  data: function () {
+  data: function() {
     return {
       active: false,
       editContent: {},
-      options: [{
-        id: 1,
-        text: "Amazon"
-      }, {
-        id: 2,
-        text: "O'Reilly"
-      }, {
-        id: 3,
-        text: "gihyo"
-      }, {
-        id: 4,
-        text: "Leanpub"
-      }]
+      options: [
+        {
+          id: 1,
+          text: "Amazon"
+        },
+        {
+          id: 2,
+          text: "O'Reilly"
+        },
+        {
+          id: 3,
+          text: "gihyo"
+        },
+        {
+          id: 4,
+          text: "Leanpub"
+        }
+      ]
     };
   },
   methods: {
-    open: function (content) {
+    open: function(content) {
       this.active = true;
       this.editContent = {
         id: content.id,
@@ -89,37 +120,37 @@ Vue.component("modal", {
         publisher: content.publisher
       };
     },
-    close: function () {
+    close: function() {
       this.active = false;
     },
-    update: function (content) {
+    update: function(content) {
       var self = this;
       axios
         .post("/edit", JSON.stringify(this.editContent))
-        .then(function (response) {
+        .then(function(response) {
           Hub.$emit("updateContent", content);
           self.close();
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
     },
-    del: function (content) {
+    del: function(content) {
       var self = this;
       axios
         .post("/delete", JSON.stringify(this.editContent))
-        .then(function (response) {
+        .then(function(response) {
           Hub.$emit("deleteContent", content);
           self.close();
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
     }
   },
   mounted() {
     this.$nextTick(
-      function () {
+      function() {
         Hub.$on("open-modal", this.open);
         Hub.$on("close-modal", this.close);
       }.bind(this)
