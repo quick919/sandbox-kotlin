@@ -9,7 +9,8 @@ var vm = new Vue({
       isActive: false,
       thumbnails: [],
       activeNumber: "",
-      content: {}
+      content: {},
+      contentName: ""
     };
   },
   methods: {

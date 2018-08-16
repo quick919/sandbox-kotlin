@@ -17,7 +17,7 @@
             </option>
         </select>
     
-        <lable>content name<input type="text" v-model="contentName" v-on:change="fetchThumbnail" /></lable>
+        <label>content name<input type="text" v-model="contentName" v-on:change="fetchThumbnail" /></label>
         <div class="content-box">
             <div v-for="(thumbnail, index) in thumbnails" :key="index" class="image-box content">
                 <img class="thumbnail" v-bind:class="{checked: thumbnail.isActive}" v-if="thumbnail !== null" :src="thumbnail.imageLink" v-on:click="selectThumbnail(thumbnail, index)" ></img>    
