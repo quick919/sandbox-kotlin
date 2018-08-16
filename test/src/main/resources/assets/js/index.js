@@ -9,7 +9,8 @@ new Vue({
     return {
       contents: [],
       selected: "all",
-      searchTitle: ""
+      searchTitle: "",
+      errored: false
     };
   },
   mounted() {
@@ -28,18 +29,9 @@ new Vue({
   methods: {
     getData: function () {
       const self = this;
-      axios
-        .get("/contents", {
-          params: {
-            publisher: self.selected
-          }
-        })
-        .then(function (response) {
-          self.contents = response.data;
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      this._get(self, "contents", {
+        publisher: self.selected
+      })
     },
     openModal: function (content) {
       Hub.$emit("open-modal", content);
@@ -68,18 +60,20 @@ new Vue({
     },
     search: function () {
       const self = this;
-      axios
-        .get("/search", {
-          params: {
-            searchTitle: self.searchTitle
-          }
+      this._get(self, "/search", {
+        searchTitle: self.searchTitle
+      })
+    },
+    _get: function (self, url, params) {
+      axios.get(url, {
+          params: params
         })
         .then(function (response) {
-          console.log(response.data);
           self.contents = response.data;
         })
         .catch(function (error) {
           console.log(error);
+          self.errored = true;
         });
     }
   }
@@ -110,23 +104,22 @@ Vue.component("modal", {
     },
     update: function (content) {
       var self = this;
-      axios
-        .post("/edit", JSON.stringify(this.editContent))
-        .then(function (response) {
-          Hub.$emit("updateContent", content);
-          self.close();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      this._post("/edit", content, function () {
+        Hub.$emit("updateContent", content);
+        self.close();
+      }.bind(self));
     },
     del: function (content) {
       var self = this;
-      axios
-        .post("/delete", JSON.stringify(this.editContent))
+      this._post("/delete", content, function () {
+        Hub.$emit("deleteContent", content);
+        self.close();
+      }.bind(self));
+    },
+    _post: function (url, content, after) {
+      axios.post(url, JSON.stringify(content))
         .then(function (response) {
-          Hub.$emit("deleteContent", content);
-          self.close();
+          after();
         })
         .catch(function (error) {
           console.log(error);
