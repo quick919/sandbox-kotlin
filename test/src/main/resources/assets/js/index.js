@@ -8,7 +8,8 @@ new Vue({
   data() {
     return {
       contents: [],
-      selected: "all"
+      selected: "all",
+      searchTitle: ""
     };
   },
   mounted() {
@@ -64,6 +65,22 @@ new Vue({
     },
     changePublisher: function () {
       this.getData();
+    },
+    search: function () {
+      const self = this;
+      axios
+        .get("/search", {
+          params: {
+            searchTitle: self.searchTitle
+          }
+        })
+        .then(function (response) {
+          console.log(response.data);
+          self.contents = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }
 });

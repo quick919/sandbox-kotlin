@@ -11,6 +11,9 @@
         <div  id="app2">
             <h1>h1</h1>
 
+            <input v-model="searchTitle" type="text" />
+            <button @click="search">search</button>
+
             <select v-model="selected" @change="changePublisher">
                 <option>all</option>
                 <option v-for="(option) in options">

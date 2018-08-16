@@ -36,6 +36,7 @@ class ContentController {
         content()
         edit()
         delete()
+        search()
     }
 
     fun create() {
@@ -125,6 +126,26 @@ class ContentController {
                     Contents.deleteWhere { Contents.id eq obj?.let { it.id.toInt() } }
                 }?:  throw Exception()
             }
+        }
+    }
+
+    fun search() {
+        get("/search") { req, res ->
+            var jsonString = ""
+            val searchTitle = req.queryParams("searchTitle")
+            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+//                logger.addLogger(StdOutSqlLogger)
+                var list = mutableListOf<data.Content>()
+                Content.find { Contents.title like "%"+ "${searchTitle}"+"%" }.sortedBy { it.title }.forEach {
+                    val content = data.Content(it)
+                    list.add(content)
+                }
+                val moshi = Moshi.Builder().build()
+                val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+                val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
+                jsonString = listAdapter.toJson(list)
+            }
+            jsonString
         }
     }
 }
