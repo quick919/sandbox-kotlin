@@ -26,6 +26,6 @@
         </div>
         <input type="button" value="save" v-on:click="post" />
     </div>
-    <script src="../js/content.js"></script>
+    <script type="module" src="../js/content.js"></script>
 </body>
 </html>

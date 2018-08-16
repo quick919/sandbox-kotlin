@@ -1,25 +1,15 @@
+import SelectablePublisher from './modules/selectable-publisher.js'
+
 var vm = new Vue({
   el: "#app",
+  mixins: [SelectablePublisher],
   data() {
     return {
       publisher: "Amazon",
       isActive: false,
       thumbnails: [],
       activeNumber: "",
-      content: {},
-      options: [{
-        id: 1,
-        text: "Amazon"
-      }, {
-        id: 2,
-        text: "O'Reilly"
-      }, {
-        id: 3,
-        text: "gihyo"
-      }, {
-        id: 4,
-        text: "Leanpub"
-      }]
+      content: {}
     };
   },
   methods: {
