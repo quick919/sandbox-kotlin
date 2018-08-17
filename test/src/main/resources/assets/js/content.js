@@ -1,6 +1,8 @@
 import SelectablePublisher from './modules/selectable-publisher.js'
+import Modal2 from './modules/modal.js'
+import Hub from './modules/vue-hub.js'
 
-var vm = new Vue({
+new Vue({
   el: "#app",
   mixins: [SelectablePublisher],
   data() {
@@ -12,6 +14,9 @@ var vm = new Vue({
       content: {},
       contentName: ""
     };
+  },
+  components: {
+    Modal2
   },
   methods: {
     post: function () {
@@ -76,6 +81,17 @@ var vm = new Vue({
         }
       }
       console.log(self.thumbnails);
+    },
+    openModal: function () {
+      // var content = {
+      //   id: "",
+      //   title: "",
+      //   imageLink: "",
+      //   isbnCode: "",
+      //   publisher: ""
+      // }
+      console.log("openModal")
+      Hub.$emit("open-modal", {});
     }
   }
 });

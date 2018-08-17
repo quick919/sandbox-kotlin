@@ -14,6 +14,9 @@ new Vue({
       errored: false
     };
   },
+  components: {
+    Modal
+  },
   mounted() {
     this.$nextTick(
       function () {
@@ -79,5 +82,3 @@ new Vue({
     }
   }
 });
-
-Vue.component("modal", Modal);

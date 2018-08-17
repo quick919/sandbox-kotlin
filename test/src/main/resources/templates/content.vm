@@ -11,6 +11,7 @@
 <body>
     <h1>Add Content</h1>
     <div id="app">
+        <button v-on:click="openModal">create</button>
         <select v-model="publisher">
             <option v-for="(option) in options">
                 {{ option.text }}
@@ -25,7 +26,49 @@
             </div>
         </div>
         <input type="button" value="save" v-on:click="post" />
+        <modal2></modal2>
     </div>
+    <script type="text/x-template" id="modal-template">
+            <transition name="modal">
+                <div v-if="active" class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-container">
+                            <div class="modal-header">
+                                <slot name="header">
+                                    <h3>edit content</h3>
+                                </slot>
+                            </div>
+
+                            <div class="modal-body">
+                                <slot name="body">
+                                    <div class="modal-body-common">
+                                        <select v-model="editContent.publisher">
+                                            <option v-for="(option) in options">
+                                                {{ option.text }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="modal-body-common">
+                                        <input v-model="editContent.title" type="text" size="40" />
+                                    </div>
+                                    <div class="modal-body-image">
+                                        <img :src="editContent.imageLink" alt="content" border="1"></img>
+                                    </div>
+                                </slot>
+                            </div>
+
+                            <div class="modal-footer">
+                                <slot name="footer">
+                                    <button class="button" @click="update(editContent)">update</button>
+                                    <button class="button" @click="del(editContent)">delete</button>
+                                    <button class="button" @click="close">close</button>
+                                </slot>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </script>
     <script type="module" src="../js/content.js"></script>
 </body>
 </html>
