@@ -7,7 +7,9 @@ export default {
   data: function () {
     return {
       active: false,
-      editContent: {}
+      editContent: {},
+      publisher: "",
+      title: ""
     };
   },
   methods: {
@@ -35,6 +37,20 @@ export default {
       var self = this;
       this._post("/delete", content, function () {
         Hub.$emit("deleteContent", content);
+        self.close();
+      }.bind(self));
+    },
+    create: function () {
+      var self = this;
+      var content = {
+        content: {
+          title: self.title,
+          imageLink: "../image/noimage.png",
+          isbnCode: "",
+          publisher: self.publisher
+        }
+      };
+      this._post("/content", content, function () {
         self.close();
       }.bind(self));
     },

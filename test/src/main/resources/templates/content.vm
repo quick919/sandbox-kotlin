@@ -35,32 +35,32 @@
                         <div class="modal-container">
                             <div class="modal-header">
                                 <slot name="header">
-                                    <h3>edit content</h3>
+                                    <h3>create content</h3>
                                 </slot>
                             </div>
 
                             <div class="modal-body">
                                 <slot name="body">
                                     <div class="modal-body-common">
-                                        <select v-model="editContent.publisher">
+                                        <select v-model="publisher">
                                             <option v-for="(option) in options">
                                                 {{ option.text }}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="modal-body-common">
-                                        <input v-model="editContent.title" type="text" size="40" />
+                                        <input v-model="title" type="text" size="40" />
                                     </div>
                                     <div class="modal-body-image">
-                                        <img :src="editContent.imageLink" alt="content" border="1"></img>
+                                        <img src="../image/noimage.png" alt="content" border="1"></img>
                                     </div>
                                 </slot>
                             </div>
 
                             <div class="modal-footer">
                                 <slot name="footer">
-                                    <button class="button" @click="update(editContent)">update</button>
-                                    <button class="button" @click="del(editContent)">delete</button>
+                                    <button class="button" @click="create">create</button>
+                                    <!--<button class="button" @click="del(editContent)">delete</button>-->
                                     <button class="button" @click="close">close</button>
                                 </slot>
                             </div>
