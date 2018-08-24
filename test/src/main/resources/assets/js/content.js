@@ -53,9 +53,6 @@ new Vue({
     },
     selectThumbnail: function (thumbnail, index) {
       const self = this;
-      console.log(self.activeNumber);
-      console.log(index);
-      // console.log(self.thumbnails[index]);
       if (self.activeNumber === "") {
         var obj = self.thumbnails[index];
         obj.isActive = true;
@@ -63,16 +60,12 @@ new Vue({
         self.thumbnails.splice(index, 1, obj);
         self.content = thumbnail;
       } else {
+        var obj = self.thumbnails[self.activeNumber];
+        obj.isActive = false;
+        self.thumbnails.splice(self.activeNumber, 1, obj);
         if (self.activeNumber === index) {
-          var obj = self.thumbnails[self.activeNumber];
-          obj.isActive = false;
-          self.thumbnails.splice(self.activeNumber, 1, obj);
           self.activeNumber = "";
         } else {
-          var obj = self.thumbnails[self.activeNumber];
-          obj.isActive = false;
-          self.thumbnails.splice(self.activeNumber, 1, obj);
-          self.activeNumber = "";
           var obj = self.thumbnails[index];
           obj.isActive = true;
           self.activeNumber = index;
@@ -80,7 +73,6 @@ new Vue({
           self.content = thumbnail;
         }
       }
-      console.log(self.thumbnails);
     },
     openModal: function () {
       // var content = {
