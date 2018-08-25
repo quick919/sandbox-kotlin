@@ -1,10 +1,11 @@
 import SelectablePublisher from './modules/selectable-publisher.js'
 import Modal2 from './modules/modal.js'
 import Hub from './modules/vue-hub.js'
+import ContentSelector from './modules/content-selector.js'
 
 new Vue({
   el: "#app",
-  mixins: [SelectablePublisher],
+  mixins: [SelectablePublisher, ContentSelector],
   data() {
     return {
       publisher: "Amazon",
@@ -52,15 +53,6 @@ new Vue({
         .catch(function (error) {
           console.log(error);
         });
-    },
-    selectThumbnail: function (content, index) {
-      if (this.selectedContentIndex === index) {
-        this.selectedContent = {};
-        this.selectedContentIndex = -1;
-      } else {
-        this.selectedContentIndex = index;
-        this.selectedContent = content;
-      }
     },
     openModal: function () {
       // var content = {
