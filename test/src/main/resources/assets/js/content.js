@@ -12,7 +12,9 @@ new Vue({
       thumbnails: [],
       activeNumber: "",
       content: {},
-      contentName: ""
+      contentName: "",
+      selectedContent: {},
+      selectedContentIndex: -1
     };
   },
   components: {
@@ -20,10 +22,10 @@ new Vue({
   },
   methods: {
     post: function () {
-      this.content.publisher = this.publisher;
+      this.selectedContent.publisher = this.publisher;
       axios
         .post("/content", {
-          content: this.content
+          content: this.selectedContent
         })
         .then(function (response) {
           console.log(response);
@@ -51,27 +53,13 @@ new Vue({
           console.log(error);
         });
     },
-    selectThumbnail: function (thumbnail, index) {
-      const self = this;
-      if (self.activeNumber === "") {
-        var obj = self.thumbnails[index];
-        obj.isActive = true;
-        self.activeNumber = index;
-        self.thumbnails.splice(index, 1, obj);
-        self.content = thumbnail;
+    selectThumbnail: function (content, index) {
+      if (this.selectedContentIndex === index) {
+        this.selectedContent = {};
+        this.selectedContentIndex = -1;
       } else {
-        var obj = self.thumbnails[self.activeNumber];
-        obj.isActive = false;
-        self.thumbnails.splice(self.activeNumber, 1, obj);
-        if (self.activeNumber === index) {
-          self.activeNumber = "";
-        } else {
-          var obj = self.thumbnails[index];
-          obj.isActive = true;
-          self.activeNumber = index;
-          self.thumbnails.splice(index, 1, obj);
-          self.content = thumbnail;
-        }
+        this.selectedContentIndex = index;
+        this.selectedContent = content;
       }
     },
     openModal: function () {
