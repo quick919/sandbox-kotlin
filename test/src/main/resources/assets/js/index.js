@@ -1,11 +1,12 @@
 import SelectablePublisher from './modules/selectable-publisher.js'
 import Modal from './modules/modal.js'
 import Hub from './modules/vue-hub.js'
+import ContentSelector from './modules/content-selector.js'
 
 
 new Vue({
   el: "#app2",
-  mixins: [SelectablePublisher],
+  mixins: [SelectablePublisher, ContentSelector],
   data() {
     return {
       contents: [],
