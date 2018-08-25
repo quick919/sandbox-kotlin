@@ -6,7 +6,7 @@ export default {
     }
   },
   methods: {
-    selectThumbnail: function (content, index) {
+    selectContent: function (content, index) {
       if (this.selectedContentIndex === index) {
         this.selectedContent = {};
         this.selectedContentIndex = -1;
@@ -14,6 +14,10 @@ export default {
         this.selectedContentIndex = index;
         this.selectedContent = content;
       }
+    },
+    unselectContent: function() {
+      this.selectedContent = {};
+      this.selectedContentIndex = -1;
     }
   }
 }

@@ -1,4 +1,5 @@
 .image-box img.thumbnail.checked {
   border: 6px solid blue;
   box-sizing: border-box;
+  cursor: pointer;
 }
