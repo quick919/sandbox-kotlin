@@ -37,6 +37,7 @@ class ContentController {
         edit()
         delete()
         search()
+        output()
     }
 
     fun create() {
@@ -48,32 +49,7 @@ class ContentController {
 
     fun contents() {
         get("/contents") {req,_->
-            var jsonString = ""
-            val publisher = req.queryParams("publisher")
-            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
-//                logger.addLogger(StdOutSqlLogger)
-                var list = mutableListOf<data.Content>()
-
-                when(publisher) {
-                    "all" -> {
-                        Content.all().sortedBy { it.title }.forEach {
-                            val content = data.Content(it)
-                            list.add(content)
-                        }
-                    }
-                    else -> {
-                        val pub = Publisher.find { Publishers.name eq publisher }.first()
-                        Content.find { Contents.publisher eq pub.id }.sortedBy { it.title }.forEach {
-                            val content = data.Content(it)
-                            list.add(content)
-                        }
-                    }
-                }
-                val moshi = Moshi.Builder().build()
-                val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
-                val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
-                jsonString = listAdapter.toJson(list)
-            }
+            var jsonString = outputJsonFromPublisher(req.queryParams("publisher"))
             jsonString
         }
     }
@@ -131,21 +107,66 @@ class ContentController {
 
     fun search() {
         get("/search") { req, res ->
-            var jsonString = ""
-            val searchTitle = req.queryParams("searchTitle")
-            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
-//                logger.addLogger(StdOutSqlLogger)
-                var list = mutableListOf<data.Content>()
-                Content.find { Contents.title like "%"+ "${searchTitle}"+"%" }.sortedBy { it.title }.forEach {
-                    val content = data.Content(it)
-                    list.add(content)
-                }
-                val moshi = Moshi.Builder().build()
-                val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
-                val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
-                jsonString = listAdapter.toJson(list)
-            }
+            var jsonString = outputJsonFromSearchTitle(req.queryParams("searchTitle"))
             jsonString
         }
+    }
+
+    fun output() {
+        get("/output") { req, res ->
+            val searchTitle = req.queryParams("searchTitle")
+            if (searchTitle.isEmpty()) {
+                val publisher =req.queryParams("publisher")
+                outputJsonFromPublisher(publisher)
+            } else {
+                outputJsonFromSearchTitle(searchTitle)
+            }
+        }
+    }
+
+    fun outputJsonFromSearchTitle(searchTitle: String): String {
+        var json = ""
+        transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+            //                logger.addLogger(StdOutSqlLogger)
+            var list = mutableListOf<data.Content>()
+            Content.find { Contents.title like "%"+ "${searchTitle}"+"%" }.sortedBy { it.title }.forEach {
+                val content = data.Content(it)
+                list.add(content)
+            }
+            val moshi = Moshi.Builder().build()
+            val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+            val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
+            json = listAdapter.toJson(list)
+        }
+        return json
+    }
+
+    fun  outputJsonFromPublisher(publisher: String): String {
+        var json = ""
+        transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+            //                logger.addLogger(StdOutSqlLogger)
+            var list = mutableListOf<data.Content>()
+
+            when(publisher) {
+                "all" -> {
+                    Content.all().sortedBy { it.title }.forEach {
+                        val content = data.Content(it)
+                        list.add(content)
+                    }
+                }
+                else -> {
+                    val pub = Publisher.find { Publishers.name eq publisher }.first()
+                    Content.find { Contents.publisher eq pub.id }.sortedBy { it.title }.forEach {
+                        val content = data.Content(it)
+                        list.add(content)
+                    }
+                }
+            }
+            val moshi = Moshi.Builder().build()
+            val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+            val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
+            json = listAdapter.toJson(list)
+        }
+        return json
     }
 }

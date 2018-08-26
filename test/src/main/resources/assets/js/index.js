@@ -69,6 +69,27 @@ new Vue({
         searchTitle: self.searchTitle
       })
     },
+    output: function () {
+      axios.get("/output", {
+          params: {
+            searchTitle: this.searchTitle,
+            publisher: this.selected
+          }
+        })
+        .then(function (response) {
+          var json = JSON.stringify(response.data);
+          const url = window.URL.createObjectURL(new Blob([json]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'test.json');
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(function (error) {
+          console.log(error);
+          self.errored = true;
+        }.bind(this));
+    },
     _get: function (self, url, params) {
       axios.get(url, {
           params: params

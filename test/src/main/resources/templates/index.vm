@@ -26,6 +26,7 @@
             </select>
 
             <a href="/create">add</a>
+            <button @click="output">output</button>
             <main>
                 <div class="content-box">
                     <div v-for="(content, index) in contents" :key="index" class="image-box content" @mouseenter="selectContent(content, index)" @mouseleave="unselectContent">
