@@ -1,8 +1,7 @@
-import SelectablePublisher from './modules/selectable-publisher.js'
-import Modal from './modules/modal.js'
-import Hub from './modules/vue-hub.js'
-import ContentSelector from './modules/content-selector.js'
-
+import SelectablePublisher from "./modules/selectable-publisher.js";
+import Modal from "./modules/modal.js";
+import Hub from "./modules/vue-hub.js";
+import ContentSelector from "./modules/content-selector.js";
 
 new Vue({
   el: "#app2",
@@ -12,7 +11,8 @@ new Vue({
       contents: [],
       selected: "all",
       searchTitle: "",
-      errored: false
+      errored: false,
+      uploadFile: null
     };
   },
   components: {
@@ -36,7 +36,7 @@ new Vue({
       const self = this;
       this._get(self, "contents", {
         publisher: self.selected
-      })
+      });
     },
     openModal: function (content) {
       Hub.$emit("open-modal", content);
@@ -67,10 +67,11 @@ new Vue({
       const self = this;
       this._get(self, "/search", {
         searchTitle: self.searchTitle
-      })
+      });
     },
     output: function () {
-      axios.get("/output", {
+      axios
+        .get("/output", {
           params: {
             searchTitle: this.searchTitle,
             publisher: this.selected
@@ -79,19 +80,49 @@ new Vue({
         .then(function (response) {
           var json = JSON.stringify(response.data);
           const url = window.URL.createObjectURL(new Blob([json]));
-          const link = document.createElement('a');
+          const link = document.createElement("a");
           link.href = url;
-          link.setAttribute('download', 'test.json');
+          link.setAttribute("download", "test.json");
           document.body.appendChild(link);
           link.click();
         })
-        .catch(function (error) {
-          console.log(error);
-          self.errored = true;
-        }.bind(this));
+        .catch(
+          function (error) {
+            console.log(error);
+            self.errored = true;
+          }.bind(this)
+        );
+    },
+    selectedFile: function (e) {
+      e.preventDefault();
+      const file = e.target.files[0];
+      if (!(file.type === "application/json")) {
+        alert("Please specify json file.");
+        return false;
+      }
+      this.uploadFile = file;
+    },
+    upload: function () {
+      let formData = new FormData();
+      if (this.uploadFile === null) {
+        return;
+      }
+      formData.append("file", this.uploadFile);
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      axios
+        .post("/upload", formData, config)
+        .then(function (response) {
+          document.location = "/";
+        })
+        .catch(function (error) {});
     },
     _get: function (self, url, params) {
-      axios.get(url, {
+      axios
+        .get(url, {
           params: params
         })
         .then(function (response) {

@@ -10,13 +10,14 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import java.sql.Connection
+import javax.servlet.MultipartConfigElement
 
 class ContentController {
 
 
     constructor() {
         try {
-            Database.connect("jdbc:sqlite:./test.sqlite", "org.sqlite.JDBC")
+            Database.connect("jdbc:sqlite:./test2.sqlite", "org.sqlite.JDBC")
             transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
                 val c = create(Publishers, Contents)
                 if (Publisher.all().empty()) {
@@ -38,6 +39,7 @@ class ContentController {
         delete()
         search()
         output()
+        upload()
     }
 
     fun create() {
@@ -120,6 +122,45 @@ class ContentController {
                 outputJsonFromPublisher(publisher)
             } else {
                 outputJsonFromSearchTitle(searchTitle)
+            }
+        }
+    }
+
+    fun upload() {
+        post("/upload") { req, res ->
+            val multipartConfigElement = MultipartConfigElement(System.getProperty("java.io.tmpdir"))
+            req.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement)
+            req.raw().parts.forEach {
+                println(it.contentType)
+                println(it.size)
+                println(it.headerNames)
+            }
+            val inputStream  =req.raw().getPart("file").inputStream
+            val moshi = Moshi.Builder().build()
+            val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+            val adapter:JsonAdapter<List<data.Content>> = moshi.adapter(type)
+
+            inputStream.bufferedReader().use {
+                val contentList = adapter.fromJson(it.readText())
+                contentList?.forEach {
+                    transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+                        try {
+                            if(Content.find { Contents.id eq it.id }.empty())  {
+                                val pub = Publisher.find { Publishers.name eq it.publisher }.first()
+                                Content.new {
+                                    it.let {
+                                        title = it.title
+                                        imageLink = it.imageLink
+                                        isbnCode = it.isbnCode
+                                        publisher = pub
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            println(e)
+                        }
+                    }
+                }
             }
         }
     }
