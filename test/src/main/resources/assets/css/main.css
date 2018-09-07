@@ -9,12 +9,18 @@
   flex-direction: column;
   text-align: center;
   width: 130px;
-  height: 200px;
   margin: 50px;
 }
 
-/* modal */
+.title {
+  /*Chrome only support*/
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
 
+/* modal */
 .modal-mask {
   position: fixed;
   z-index: 9998;

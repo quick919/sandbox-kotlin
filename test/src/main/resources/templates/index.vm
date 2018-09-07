@@ -38,7 +38,7 @@
                 <div class="content-box">
                     <div v-for="(content, index) in contents" :key="index" class="image-box content" @mouseenter="selectContent(content, index)" @mouseleave="unselectContent">
                         <img class="thumbnail" v-bind:class="{checked: selectedContentIndex === index}"  :src="content.imageLink" @click="openModal(content)" @keyup.esc="closeModal()"></img>
-                        <p>{{ content.title }}</p>
+                        <p class="title">{{ content.title }}</p>
 
                     </div>
                     <modal></modal>
