@@ -32,7 +32,8 @@
                     <button class="button" @click="output">output</button>
                     <input type="file" ref="files" accept=".json" @change="selectedFile">
                     <button class="button" type="submit" @click="upload">upload</button>    
-                </div>            
+                </div>
+                <a href="/login">login</a>          
             </header>
             <main>
                 <div class="content-box">

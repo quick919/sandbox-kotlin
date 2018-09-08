@@ -3,4 +3,5 @@ fun main(args: Array<String>) {
     application.ignite()
     ContentController()
     ThumbnailController()
+    LoginController()
 }
