@@ -3,7 +3,7 @@ export default {
     return {
       selectedContent: {},
       selectedContentIndex: -1,
-      multiSelectedContent: []
+      multiSelectedContentsIndex: []
     }
   },
   methods: {
@@ -21,13 +21,13 @@ export default {
       this.selectedContentIndex = -1;
     },
     multiSelectContent: function (content, index) {
-      console.log(this.multiSelectedContent)
-      if (this.multiSelectedContent.indexOf(index) == -1) {
-        this.multiSelectedContent.push(index);
+      console.log(this.multiSelectedContentsIndex)
+      if (this.multiSelectedContentsIndex.indexOf(index) == -1) {
+        this.multiSelectedContentsIndex.push(index);
       } else {
-        this.multiSelectedContent.forEach((element, idx) => {
+        this.multiSelectedContentsIndex.forEach((element, idx) => {
           if (element === index) {
-            this.multiSelectedContent.splice(idx, 1);
+            this.multiSelectedContentsIndex.splice(idx, 1);
           }
         });
       }

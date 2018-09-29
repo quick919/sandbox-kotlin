@@ -38,7 +38,7 @@
             <main>
                 <div class="content-box">
                     <div v-for="(content, index) in contents" :key="index" class="image-box content">
-                        <img class="thumbnail" v-bind:class="{checked: multiSelectedContent.indexOf(index) >= 0}"  :src="content.imageLink" @click="multiSelectContent(content, index)" @dblclick="openModal(content)" @keyup.esc="closeModal()"></img>
+                        <img class="thumbnail" v-bind:class="{checked: multiSelectedContentsIndex.indexOf(index) >= 0}"  :src="content.imageLink" @click="multiSelectContent(content, index)" @dblclick="openModal(content)" @keyup.esc="closeModal()"></img>
                         <p class="title" :title="content.title">{{ content.title }}</p>
 
                     </div>
