@@ -3,3 +3,8 @@
   box-sizing: border-box;
   cursor: pointer;
 }
+
+.image-box img.thumbnail:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}

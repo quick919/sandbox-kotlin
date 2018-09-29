@@ -2,7 +2,8 @@ export default {
   data() {
     return {
       selectedContent: {},
-      selectedContentIndex: -1
+      selectedContentIndex: -1,
+      multiSelectedContent: []
     }
   },
   methods: {
@@ -15,9 +16,21 @@ export default {
         this.selectedContent = content;
       }
     },
-    unselectContent: function() {
+    unselectContent: function () {
       this.selectedContent = {};
       this.selectedContentIndex = -1;
+    },
+    multiSelectContent: function (content, index) {
+      console.log(this.multiSelectedContent)
+      if (this.multiSelectedContent.indexOf(index) == -1) {
+        this.multiSelectedContent.push(index);
+      } else {
+        this.multiSelectedContent.forEach((element, idx) => {
+          if (element === index) {
+            this.multiSelectedContent.splice(idx, 1);
+          }
+        });
+      }
     }
   }
 }
