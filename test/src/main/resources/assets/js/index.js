@@ -12,7 +12,8 @@ new Vue({
       selected: "all",
       searchTitle: "",
       errored: false,
-      uploadFile: null
+      uploadFile: null,
+      readingState: 0
     };
   },
   components: {
@@ -35,7 +36,8 @@ new Vue({
     getData: function () {
       const self = this;
       this._get(self, "contents", {
-        publisher: self.selected
+        publisher: self.selected,
+        readingState: self.readingState
       });
     },
     openModal: function (content) {
@@ -74,7 +76,8 @@ new Vue({
         .get("/output", {
           params: {
             searchTitle: this.searchTitle,
-            publisher: this.selected
+            publisher: this.selected,
+            readingState: this.readingState
           }
         })
         .then(function (response) {
@@ -119,6 +122,15 @@ new Vue({
           document.location = "/";
         })
         .catch(function (error) {});
+    },
+    done: function () {
+      axios.post("/done",
+        JSON.stringify(this.multiSelectedContents)
+      ).then(function (response) {
+        document.location = "/";
+      }).catch(function (response) {
+        console.log(response);
+      });
     },
     _get: function (self, url, params) {
       axios

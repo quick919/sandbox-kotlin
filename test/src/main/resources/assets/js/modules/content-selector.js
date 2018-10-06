@@ -3,7 +3,8 @@ export default {
     return {
       selectedContent: {},
       selectedContentIndex: -1,
-      multiSelectedContentsIndex: []
+      multiSelectedContentsIndex: [],
+      multiSelectedContents: []
     }
   },
   methods: {
@@ -24,10 +25,12 @@ export default {
       console.log(this.multiSelectedContentsIndex)
       if (this.multiSelectedContentsIndex.indexOf(index) == -1) {
         this.multiSelectedContentsIndex.push(index);
+        this.multiSelectedContents.push(content);
       } else {
         this.multiSelectedContentsIndex.forEach((element, idx) => {
           if (element === index) {
             this.multiSelectedContentsIndex.splice(idx, 1);
+            this.multiSelectedContents.splice(idx, 1);
           }
         });
       }

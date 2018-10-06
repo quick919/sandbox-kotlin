@@ -10,5 +10,6 @@ class Content(id: EntityID<Int>) : IntEntity(id) {
     var title by Contents.title
     var imageLink by Contents.imageLink
     var isbnCode by Contents.isbnCode
+    var done by Contents.done
     var publisher by Publisher referencedOn Contents.publisher
 }

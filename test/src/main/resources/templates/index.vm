@@ -23,12 +23,14 @@
                             {{ option.text }}
                         </option>
                     </select>
-
+                    <input v-model="readingState" type="radio" name="" value="1" @change="getData" />done
+                    <input v-model="readingState" type="radio" name="" value="0" @change="getData" checked />yet
                     <input v-model="searchTitle" type="text" size="30" placeholder="Search by content name" />
                     <button class="button" @click="search">search</button>
                 </div>
                 <div>
                     <a href="/create">add</a>
+                    <button class="button" @click="done">done</button>
                     <button class="button" @click="output">output</button>
                     <input type="file" ref="files" accept=".json" @change="selectedFile">
                     <button class="button" type="submit" @click="upload">upload</button>    

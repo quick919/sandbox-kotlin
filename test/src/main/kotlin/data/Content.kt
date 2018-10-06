@@ -2,7 +2,7 @@ package data
 
 import dao.Content
 
-data class Content(val id: String, val title: String, val imageLink: String, val isbnCode: String, val publisher: String) {
+data class Content(val id: String, val title: String, val imageLink: String, val isbnCode: String, val publisher: String, val done: Int) {
 
     constructor(content: Content) :
             this(
@@ -10,5 +10,7 @@ data class Content(val id: String, val title: String, val imageLink: String, val
             content.title,
             content.imageLink,
             content.isbnCode,
-            content.publisher.name)
+            content.publisher.name,
+            content.done
+            )
 }

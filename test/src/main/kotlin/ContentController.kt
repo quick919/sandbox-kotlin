@@ -9,6 +9,7 @@ import spark.Spark.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SchemaUtils.create
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.sql.Connection
 import javax.servlet.MultipartConfigElement
 
@@ -40,6 +41,7 @@ class ContentController {
         search()
         output()
         upload()
+        done()
     }
 
     fun create() {
@@ -51,7 +53,7 @@ class ContentController {
 
     fun contents() {
         get("/contents") {req,_->
-            var jsonString = outputJsonFromPublisher(req.queryParams("publisher"))
+            var jsonString = outputJsonFromPublisher(req.queryParams("publisher"), req.queryParams("readingState"))
             jsonString
         }
     }
@@ -117,9 +119,10 @@ class ContentController {
     fun output() {
         get("/output") { req, res ->
             val searchTitle = req.queryParams("searchTitle")
+            val readingState = req.queryParams("readingState")
             if (searchTitle.isEmpty()) {
                 val publisher =req.queryParams("publisher")
-                outputJsonFromPublisher(publisher)
+                outputJsonFromPublisher(publisher, readingState)
             } else {
                 outputJsonFromSearchTitle(searchTitle)
             }
@@ -165,6 +168,23 @@ class ContentController {
         }
     }
 
+    fun done() {
+        post("done") { req, res ->
+            val moshi = Moshi.Builder().build()
+            val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+            val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
+            val contents = listAdapter.fromJson(req.body())
+            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+                contents?.forEach {
+                    //Contentsにカラム追加
+                    var content = Content.find { Contents.id eq it.id }.first()
+                    content.done = 1
+                }
+            }
+        }
+    }
+
+
     fun outputJsonFromSearchTitle(searchTitle: String): String {
         var json = ""
         transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
@@ -182,7 +202,7 @@ class ContentController {
         return json
     }
 
-    fun  outputJsonFromPublisher(publisher: String): String {
+    fun  outputJsonFromPublisher(publisher: String, readingstate: String): String {
         var json = ""
         transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
             //                logger.addLogger(StdOutSqlLogger)
@@ -190,14 +210,14 @@ class ContentController {
 
             when(publisher) {
                 "all" -> {
-                    Content.all().sortedBy { it.title }.forEach {
+                    Content.find { Contents.done eq readingstate.toInt() }.sortedBy { it.title }.forEach {
                         val content = data.Content(it)
                         list.add(content)
                     }
                 }
                 else -> {
                     val pub = Publisher.find { Publishers.name eq publisher }.first()
-                    Content.find { Contents.publisher eq pub.id }.sortedBy { it.title }.forEach {
+                    Content.find { Contents.publisher eq pub.id and (Contents.done eq readingstate.toInt()) }.sortedBy { it.title }.forEach {
                         val content = data.Content(it)
                         list.add(content)
                     }
