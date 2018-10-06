@@ -30,7 +30,8 @@
                 </div>
                 <div>
                     <a href="/create">add</a>
-                    <button class="button" @click="done">done</button>
+                    <button v-show="readingState == 0" class="button" @click="done">done</button>
+                    <button v-show="readingState == 1" class="button" @click="undone">yet</button>
                     <button class="button" @click="output">output</button>
                     <input type="file" ref="files" accept=".json" @change="selectedFile">
                     <button class="button" type="submit" @click="upload">upload</button>    

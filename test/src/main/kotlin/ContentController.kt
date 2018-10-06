@@ -9,12 +9,15 @@ import spark.Spark.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SchemaUtils.create
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.sql.Connection
 import javax.servlet.MultipartConfigElement
 
 class ContentController {
 
+    companion object {
+        const val DONE = 1
+        const val UNDONE = 0
+    }
 
     constructor() {
         try {
@@ -42,6 +45,7 @@ class ContentController {
         output()
         upload()
         done()
+        undone()
     }
 
     fun create() {
@@ -170,20 +174,28 @@ class ContentController {
 
     fun done() {
         post("done") { req, res ->
-            val moshi = Moshi.Builder().build()
-            val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
-            val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
-            val contents = listAdapter.fromJson(req.body())
-            transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
-                contents?.forEach {
-                    //Contentsにカラム追加
-                    var content = Content.find { Contents.id eq it.id }.first()
-                    content.done = 1
-                }
-            }
+            changeReadingStatus(req.body(), DONE)
         }
     }
 
+    fun undone() {
+        post("undone") { req, res ->
+            changeReadingStatus(req.body(), UNDONE)
+        }
+    }
+
+    fun changeReadingStatus(params: String, readingState: Int) {
+        val moshi = Moshi.Builder().build()
+        val type = Types.newParameterizedType(List::class.java, data.Content::class.java)
+        val listAdapter: JsonAdapter<List<data.Content>> = moshi.adapter(type)
+        val contents = listAdapter.fromJson(params)
+        transaction(transactionIsolation = Connection.TRANSACTION_SERIALIZABLE, repetitionAttempts = 3) {
+            contents?.forEach {
+                var content = Content.find { Contents.id eq it.id }.first()
+                content.done = readingState
+            }
+        }
+    }
 
     fun outputJsonFromSearchTitle(searchTitle: String): String {
         var json = ""

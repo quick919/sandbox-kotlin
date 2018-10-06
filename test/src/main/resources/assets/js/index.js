@@ -132,6 +132,15 @@ new Vue({
         console.log(response);
       });
     },
+    undone: function () {
+      axios.post("/undone",
+        JSON.stringify(this.multiSelectedContents)
+      ).then(function (response) {
+        document.location = "/";
+      }).catch(function (response) {
+        console.log(response);
+      });
+    },
     _get: function (self, url, params) {
       axios
         .get(url, {
